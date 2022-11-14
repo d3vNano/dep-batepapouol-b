@@ -178,7 +178,7 @@ app.post("/status", async (req, res) => {
 
         await participantCollection.updateOne(
             { name: user },
-            { $set: { lastStatus: DataTransfer.now() } }
+            { $set: { lastStatus: Date.now() } }
         );
         res.sendStatus(200);
     } catch (err) {
