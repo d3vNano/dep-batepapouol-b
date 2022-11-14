@@ -45,8 +45,8 @@ const messageCollection = db.collection("messages");
 
 //Rotas de participantes
 app.post("/participants", async (req, res) => {
-    const { name } = req.body;
-    const validation = participantSchema.validate(name, {
+    const participant = req.body;
+    const validation = participantSchema.validate(participant, {
         abortEarly: false,
     });
 
@@ -57,7 +57,9 @@ app.post("/participants", async (req, res) => {
     }
 
     try {
-        const participantExist = await participantCollection.findOne({ name });
+        const participantExist = await participantCollection.findOne({
+            name: participant.name,
+        });
 
         if (participantExist) {
             res.status(409).send("Usuário já cadastrado!");
@@ -65,12 +67,12 @@ app.post("/participants", async (req, res) => {
         }
 
         await participantCollection.insertOne({
-            name,
+            name: participant.name,
             lastStatus: Date.now(),
         });
 
         await messageCollection.insertOne({
-            from: name,
+            from: participant.name,
             to: "todos",
             text: "entra na sala...",
             type: "status",
